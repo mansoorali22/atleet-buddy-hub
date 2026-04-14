@@ -47,21 +47,24 @@ export default function UsersPage() {
   return (
     <DashboardLayout>
       <div className="space-y-6">
-        <h1 className="font-heading text-2xl font-semibold text-foreground">User Management</h1>
+        <div className="flex items-center justify-between">
+          <h1 className="font-heading text-3xl font-semibold text-foreground tracking-tight">User Management</h1>
+          <span className="text-sm text-muted-foreground">{filtered.length} users</span>
+        </div>
 
         {/* Filters */}
-        <div className="flex flex-wrap gap-3">
-          <div className="relative flex-1 min-w-[200px] max-w-sm">
-            <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+        <div className="flex flex-wrap gap-3 items-center">
+          <div className="relative flex-1 min-w-[240px] max-w-md">
+            <Search className="absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
             <Input
               placeholder="Search users..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="pl-9"
+              className="pl-10 h-10"
             />
           </div>
           <Select value={statusFilter} onValueChange={setStatusFilter}>
-            <SelectTrigger className="w-36">
+            <SelectTrigger className="w-40 h-10">
               <SelectValue placeholder="Status" />
             </SelectTrigger>
             <SelectContent>
@@ -72,7 +75,7 @@ export default function UsersPage() {
             </SelectContent>
           </Select>
           <Select value={planFilter} onValueChange={setPlanFilter}>
-            <SelectTrigger className="w-36">
+            <SelectTrigger className="w-40 h-10">
               <SelectValue placeholder="Plan" />
             </SelectTrigger>
             <SelectContent>
@@ -85,42 +88,42 @@ export default function UsersPage() {
         </div>
 
         {/* Table */}
-        <div className="rounded-xl border border-border bg-card shadow-sm overflow-x-auto">
+        <div className="rounded-xl border border-border/60 bg-card shadow-sm overflow-x-auto">
           <table className="w-full text-sm">
             <thead>
-              <tr className="border-b border-border text-left">
-                <th className="px-4 py-3 font-medium text-muted-foreground">User</th>
-                <th className="px-4 py-3 font-medium text-muted-foreground">Status</th>
-                <th className="px-4 py-3 font-medium text-muted-foreground">Plan</th>
-                <th className="px-4 py-3 font-medium text-muted-foreground hidden md:table-cell">Start</th>
-                <th className="px-4 py-3 font-medium text-muted-foreground hidden md:table-cell">End</th>
-                <th className="px-4 py-3 font-medium text-muted-foreground">Messages</th>
-                <th className="px-4 py-3 font-medium text-muted-foreground w-12"></th>
+              <tr className="border-b border-border text-left bg-muted/30">
+                <th className="px-5 py-4 font-semibold text-muted-foreground text-xs uppercase tracking-wide">User</th>
+                <th className="px-5 py-4 font-semibold text-muted-foreground text-xs uppercase tracking-wide">Status</th>
+                <th className="px-5 py-4 font-semibold text-muted-foreground text-xs uppercase tracking-wide">Plan</th>
+                <th className="px-5 py-4 font-semibold text-muted-foreground text-xs uppercase tracking-wide hidden md:table-cell">Start</th>
+                <th className="px-5 py-4 font-semibold text-muted-foreground text-xs uppercase tracking-wide hidden md:table-cell">End</th>
+                <th className="px-5 py-4 font-semibold text-muted-foreground text-xs uppercase tracking-wide">Messages</th>
+                <th className="px-5 py-4 w-12"></th>
               </tr>
             </thead>
             <tbody>
               {filtered.map((u) => (
-                <tr key={u.id} className="border-b border-border last:border-0 hover:bg-secondary/50 transition-colors">
-                  <td className="px-4 py-3 font-medium text-foreground">{u.user}</td>
-                  <td className="px-4 py-3">
-                    <Badge variant="secondary" className={`${statusColor[u.status]} capitalize text-xs`}>
+                <tr key={u.id} className="border-b border-border last:border-0 hover:bg-secondary/40 transition-colors">
+                  <td className="px-5 py-4 font-medium text-foreground">{u.user}</td>
+                  <td className="px-5 py-4">
+                    <Badge variant="secondary" className={`${statusColor[u.status]} capitalize text-xs font-semibold`}>
                       {u.status}
                     </Badge>
                   </td>
-                  <td className="px-4 py-3 capitalize text-foreground">{u.plan}</td>
-                  <td className="px-4 py-3 text-muted-foreground hidden md:table-cell">{u.start}</td>
-                  <td className="px-4 py-3 text-muted-foreground hidden md:table-cell">{u.end}</td>
-                  <td className="px-4 py-3 text-foreground">{u.msgs.toLocaleString()}</td>
-                  <td className="px-4 py-3">
+                  <td className="px-5 py-4 capitalize text-foreground font-medium">{u.plan}</td>
+                  <td className="px-5 py-4 text-muted-foreground hidden md:table-cell">{u.start}</td>
+                  <td className="px-5 py-4 text-muted-foreground hidden md:table-cell">{u.end}</td>
+                  <td className="px-5 py-4 text-foreground font-semibold">{u.msgs.toLocaleString()}</td>
+                  <td className="px-5 py-4">
                     <DropdownMenu>
-                      <DropdownMenuTrigger className="rounded-md p-1 hover:bg-secondary transition-colors">
+                      <DropdownMenuTrigger className="rounded-md p-2 hover:bg-secondary transition-colors">
                         <MoreHorizontal className="h-4 w-4 text-muted-foreground" />
                       </DropdownMenuTrigger>
                       <DropdownMenuContent align="end">
-                        <DropdownMenuItem>Edit Plan</DropdownMenuItem>
-                        <DropdownMenuItem>Edit Status</DropdownMenuItem>
-                        <DropdownMenuItem>Edit Dates</DropdownMenuItem>
-                        <DropdownMenuItem className="text-destructive">
+                        <DropdownMenuItem className="font-medium">Edit Plan</DropdownMenuItem>
+                        <DropdownMenuItem className="font-medium">Edit Status</DropdownMenuItem>
+                        <DropdownMenuItem className="font-medium">Edit Dates</DropdownMenuItem>
+                        <DropdownMenuItem className="text-destructive font-medium">
                           {u.status === "blocked" ? "Unblock" : "Block"}
                         </DropdownMenuItem>
                       </DropdownMenuContent>

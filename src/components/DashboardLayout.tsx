@@ -34,12 +34,12 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         }`}
       >
         {/* Brand */}
-        <div className="flex h-16 items-center gap-2 border-b border-border px-4">
-          <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-primary font-heading text-sm text-primary-foreground">
+        <div className="flex h-16 items-center gap-3 border-b border-border px-4">
+          <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-primary font-bold text-base text-primary-foreground shadow-sm">
             A
           </div>
           {sidebarOpen && (
-            <span className="font-heading text-lg font-semibold text-foreground">
+            <span className="font-heading text-lg font-semibold text-foreground tracking-tight">
               Atleet Buddy
             </span>
           )}
@@ -50,16 +50,18 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
           {navItems.map((item) => {
             const active = location.pathname === item.path;
             return (
-              <NavLink
+            <NavLink
                 key={item.path}
                 to={item.path}
-                className={`flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors ${
-                  active
-                    ? "bg-accent text-accent-foreground"
-                    : "text-muted-foreground hover:bg-secondary hover:text-foreground"
-                }`}
+                className={({ isActive }) =>
+                  `flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-all ${
+                    isActive
+                      ? "bg-accent text-accent-foreground shadow-sm"
+                      : "text-muted-foreground hover:bg-secondary hover:text-foreground"
+                  }`
+                }
               >
-                <item.icon className="h-4 w-4 shrink-0" />
+                <item.icon className="h-[18px] w-[18px] shrink-0" />
                 {sidebarOpen && <span>{item.title}</span>}
               </NavLink>
             );
@@ -68,8 +70,8 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
 
         {/* Footer */}
         <div className="border-t border-border p-3">
-          <button className="flex w-full items-center gap-3 rounded-lg px-3 py-2 text-sm text-muted-foreground hover:bg-secondary hover:text-foreground transition-colors">
-            <LogOut className="h-4 w-4 shrink-0" />
+          <button className="flex w-full items-center gap-3 rounded-lg px-3 py-2 text-sm text-muted-foreground hover:bg-destructive/5 hover:text-destructive transition-all">
+            <LogOut className="h-[18px] w-[18px] shrink-0" />
             {sidebarOpen && <span>Logout</span>}
           </button>
         </div>
@@ -90,11 +92,11 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
             {sidebarOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
           </button>
           <div className="flex-1" />
-          <div className="flex items-center gap-2 text-sm text-muted-foreground">
-            <div className="h-8 w-8 rounded-full bg-primary/10 flex items-center justify-center text-primary font-medium text-xs">
+          <div className="flex items-center gap-3 text-sm text-muted-foreground">
+            <div className="h-9 w-9 rounded-full bg-primary/10 flex items-center justify-center text-primary font-semibold text-xs border border-primary/20">
               AD
             </div>
-            <span className="hidden sm:inline">Admin</span>
+            <span className="hidden sm:inline font-medium">Admin</span>
           </div>
         </header>
 
