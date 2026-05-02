@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { NavLink, useLocation } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import {
   LayoutDashboard,
   Users,
@@ -11,19 +11,24 @@ import {
   X,
   LogOut,
 } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
+import { useAuth } from "@/hooks/useAuth";
+import type { Role } from "@/types/auth";
 
 const navItems = [
-  { title: "Dashboard", path: "/dashboard", icon: LayoutDashboard },
-  { title: "Users", path: "/users", icon: Users },
-  { title: "Usage & Cost", path: "/usage", icon: BarChart3 },
-  { title: "Refusals", path: "/refusals", icon: ShieldAlert },
-  { title: "Audit Log", path: "/audit-log", icon: ScrollText },
-  { title: "Alerts", path: "/alerts", icon: Bell },
+  { title: "Dashboard", path: "/dashboard", icon: LayoutDashboard, roles: ["admin", "support"] as Role[] },
+  { title: "Users", path: "/users", icon: Users, roles: ["admin", "support"] as Role[] },
+  { title: "Usage & Cost", path: "/usage", icon: BarChart3, roles: ["admin", "support"] as Role[] },
+  { title: "Refusals", path: "/refusals", icon: ShieldAlert, roles: ["admin", "support"] as Role[] },
+  { title: "Audit Log", path: "/audit-log", icon: ScrollText, roles: ["admin", "support"] as Role[] },
+  { title: "Alerts", path: "/alerts", icon: Bell, roles: ["admin", "support"] as Role[] },
 ];
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
   const [sidebarOpen, setSidebarOpen] = useState(true);
-  const location = useLocation();
+  const navigate = useNavigate();
+  const { user, logout } = useAuth();
+  const allowedNavItems = navItems.filter((item) => (user ? item.roles.includes(user.role) : false));
 
   return (
     <div className="flex min-h-screen w-full bg-background">
@@ -47,8 +52,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
 
         {/* Nav */}
         <nav className="flex-1 space-y-1 px-2 py-4 overflow-y-auto">
-          {navItems.map((item) => {
-            const active = location.pathname === item.path;
+          {allowedNavItems.map((item) => {
             return (
             <NavLink
                 key={item.path}
@@ -70,7 +74,13 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
 
         {/* Footer */}
         <div className="border-t border-border p-3">
-          <button className="flex w-full items-center gap-3 rounded-lg px-3 py-2 text-sm text-muted-foreground hover:bg-destructive/5 hover:text-destructive transition-all">
+          <button
+            onClick={() => {
+              logout();
+              navigate("/login");
+            }}
+            className="flex w-full items-center gap-3 rounded-lg px-3 py-2 text-sm text-muted-foreground hover:bg-destructive/5 hover:text-destructive transition-all"
+          >
             <LogOut className="h-[18px] w-[18px] shrink-0" />
             {sidebarOpen && <span>Logout</span>}
           </button>
@@ -94,9 +104,12 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
           <div className="flex-1" />
           <div className="flex items-center gap-3 text-sm text-muted-foreground">
             <div className="h-9 w-9 rounded-full bg-primary/10 flex items-center justify-center text-primary font-semibold text-xs border border-primary/20">
-              AD
+              {user?.display_name.slice(0, 2).toUpperCase() ?? "NA"}
             </div>
-            <span className="hidden sm:inline font-medium">Admin</span>
+            <div className="hidden sm:flex items-center gap-2">
+              <span className="font-medium">{user?.display_name ?? "Unknown"}</span>
+              {user && <Badge variant="secondary">{user.role}</Badge>}
+            </div>
           </div>
         </header>
 
