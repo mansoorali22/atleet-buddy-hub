@@ -1,0 +1,44 @@
+B3 — Usage & cost (hub + chatbot)
+
+1) Neon (PostgreSQL)
+   Add columns to chat_logs if missing:
+
+   ALTER TABLE chat_logs ADD COLUMN IF NOT EXISTS prompt_tokens INTEGER;
+   ALTER TABLE chat_logs ADD COLUMN IF NOT EXISTS completion_tokens INTEGER;
+   ALTER TABLE chat_logs ADD COLUMN IF NOT EXISTS cost_usd DOUBLE PRECISION;
+   ALTER TABLE chat_logs ADD COLUMN IF NOT EXISTS model VARCHAR(128);
+
+   Backfill is optional; new rows should be filled by the bot after step 2.
+
+2) After the LLM returns (e.g. in rag.py), read token_usage from response metadata,
+   compute cost for gpt-4o-mini (adjust model name and rates as needed):
+
+   # Example (USD per 1M tokens) — verify current OpenAI pricing
+   IN = 0.15 / 1_000_000
+   OUT = 0.60 / 1_000_000
+   cost_usd = (prompt_tokens * IN) + (completion_tokens * OUT)
+
+   Persist prompt_tokens, completion_tokens, cost_usd, model on the same chat_logs
+   row you insert for an answered message (response_type='answered').
+
+3) FastAPI
+   Copy integrations/b3-backend/usage.py → app/api/admin/usage.py
+   In app/api/admin/__init__.py (or wherever the admin APIRouter is built):
+
+   from app.api.admin import usage as admin_usage
+   api_router.include_router(admin_usage.router)
+
+   Endpoints (all require admin or support JWT):
+   GET /admin/usage/summary?from=YYYY-MM-DD&to=YYYY-MM-DD
+   GET /admin/usage/daily?from=...&to=...
+   GET /admin/usage/per-user?from=...&to=...
+   GET /admin/usage/dashboard
+
+   Imports: get_db from app.db.connection (this repo); use app.db.session if that is
+   where your dependency lives. ChatLog / Subscription from app.db.models, auth as in B1.
+   Register with no extra prefix if route paths already start with /usage/.
+
+   Neon: columns may already exist; IF NOT EXISTS ALTERs and SQLAlchemy create_all are both safe.
+
+4) Hub
+   VITE_API_URL must include /admin. Deploy usage routes, then open Usage & Cost and Dashboard.

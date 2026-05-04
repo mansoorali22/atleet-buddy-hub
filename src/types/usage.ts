@@ -21,3 +21,13 @@ export interface PerUserUsage {
   completion_tokens: number;
   cost: number;
 }
+
+/** GET /admin/usage/dashboard — home stat cards */
+export interface DashboardStats {
+  total_users: number;
+  active_subscriptions: number;
+  messages_today: number;
+  cost_today_usd: number;
+  messages_yesterday: number;
+  cost_yesterday_usd: number;
+}
