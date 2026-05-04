@@ -1,6 +1,7 @@
 import DashboardLayout from "@/components/DashboardLayout";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { useAuth } from "@/hooks/useAuth";
 import { AlertTriangle, TrendingUp, UserX } from "lucide-react";
 
 const alerts = [
@@ -35,10 +36,18 @@ const alerts = [
 ];
 
 export default function AlertsPage() {
+  const { user } = useAuth();
+
   return (
     <DashboardLayout>
       <div className="space-y-6">
-        <h1 className="font-heading text-2xl font-semibold text-foreground">Alerts</h1>
+        <div>
+          <h1 className="font-heading text-2xl font-semibold text-foreground">Alerts</h1>
+          <p className="mt-1 text-sm text-muted-foreground">
+            Signed in as <span className="font-medium text-foreground">{user?.role}</span> — admins and support can
+            view alerts; alert configuration (roadmap B6) is admin-only.
+          </p>
+        </div>
 
         <div className="space-y-3">
           {alerts.map((a, i) => (

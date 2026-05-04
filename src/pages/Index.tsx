@@ -4,10 +4,11 @@ import { useAuth } from "@/hooks/useAuth";
 
 export default function Index() {
   const navigate = useNavigate();
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated, isBootstrapping } = useAuth();
 
   useEffect(() => {
+    if (isBootstrapping) return;
     navigate(isAuthenticated ? "/dashboard" : "/login");
-  }, [isAuthenticated, navigate]);
+  }, [isAuthenticated, isBootstrapping, navigate]);
   return null;
 }

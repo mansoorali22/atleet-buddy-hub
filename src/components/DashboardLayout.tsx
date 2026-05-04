@@ -15,20 +15,28 @@ import { Badge } from "@/components/ui/badge";
 import { useAuth } from "@/hooks/useAuth";
 import type { Role } from "@/types/auth";
 
-const navItems = [
-  { title: "Dashboard", path: "/dashboard", icon: LayoutDashboard, roles: ["admin", "support"] as Role[] },
-  { title: "Users", path: "/users", icon: Users, roles: ["admin", "support"] as Role[] },
-  { title: "Usage & Cost", path: "/usage", icon: BarChart3, roles: ["admin", "support"] as Role[] },
-  { title: "Refusals", path: "/refusals", icon: ShieldAlert, roles: ["admin", "support"] as Role[] },
-  { title: "Audit Log", path: "/audit-log", icon: ScrollText, roles: ["admin", "support"] as Role[] },
-  { title: "Alerts", path: "/alerts", icon: Bell, roles: ["admin", "support"] as Role[] },
+/** `roles`: who may see the link. Add admin-only items with `roles: ["admin"]` (e.g. Monitoring). */
+const navItems: {
+  title: string;
+  path: string;
+  icon: typeof LayoutDashboard;
+  roles: Role[];
+}[] = [
+  { title: "Dashboard", path: "/dashboard", icon: LayoutDashboard, roles: ["admin", "support"] },
+  { title: "Users", path: "/users", icon: Users, roles: ["admin", "support"] },
+  { title: "Usage & Cost", path: "/usage", icon: BarChart3, roles: ["admin", "support"] },
+  { title: "Refusals", path: "/refusals", icon: ShieldAlert, roles: ["admin", "support"] },
+  { title: "Audit Log", path: "/audit-log", icon: ScrollText, roles: ["admin", "support"] },
+  { title: "Alerts", path: "/alerts", icon: Bell, roles: ["admin", "support"] },
 ];
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const navigate = useNavigate();
   const { user, logout } = useAuth();
-  const allowedNavItems = navItems.filter((item) => (user ? item.roles.includes(user.role) : false));
+  const allowedNavItems = navItems.filter(
+    (item) => user && item.roles.includes(user.role),
+  );
 
   return (
     <div className="flex min-h-screen w-full bg-background">

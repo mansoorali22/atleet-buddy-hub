@@ -5,5 +5,6 @@ export function useAuditLog(params?: Record<string, string | number | undefined>
   return useQuery({
     queryKey: ["audit-log", params],
     queryFn: () => auditService.list(params),
+    retry: false,
   });
 }

@@ -55,6 +55,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { useAuth } from "@/hooks/useAuth";
+import { canEditSubscriptions, canSendManualWhatsApp } from "@/lib/permissions";
 import { useUsers } from "@/hooks/useUsers";
 import { useUserDetail } from "@/hooks/useUserDetail";
 import {
@@ -113,8 +114,8 @@ function fromDatetimeLocalValue(local: string): string {
 
 export default function UsersPage() {
   const { user: authUser } = useAuth();
-  const canMutateSubscription = authUser?.role === "admin";
-  const canSendWhatsApp = authUser?.role === "admin" || authUser?.role === "support";
+  const canMutateSubscription = canEditSubscriptions(authUser?.role);
+  const canSendWhatsApp = canSendManualWhatsApp(authUser?.role);
 
   const [searchInput, setSearchInput] = useState("");
   const [debouncedSearch, setDebouncedSearch] = useState("");

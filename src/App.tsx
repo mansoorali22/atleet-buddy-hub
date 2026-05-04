@@ -13,6 +13,7 @@ import UsageCost from "./pages/UsageCost";
 import Refusals from "./pages/Refusals";
 import AuditLog from "./pages/AuditLog";
 import AlertsPage from "./pages/AlertsPage";
+import Unauthorized from "./pages/Unauthorized";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -27,6 +28,7 @@ const App = () => (
           <Routes>
             <Route path="/" element={<Index />} />
             <Route path="/login" element={<Login />} />
+            <Route path="/unauthorized" element={<Unauthorized />} />
             <Route
               path="/dashboard"
               element={
@@ -70,7 +72,7 @@ const App = () => (
             <Route
               path="/alerts"
               element={
-                <ProtectedRoute roles={["admin", "support"]}>
+                <ProtectedRoute>
                   <AlertsPage />
                 </ProtectedRoute>
               }
