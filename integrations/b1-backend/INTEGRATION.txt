@@ -1,0 +1,35 @@
+B1 backend integration (whatsapp-chatbot repo)
+==============================================
+
+1) Copy users.py into your chatbot project as:
+   app/api/admin/users.py
+
+2) Register the router in app/api/admin/__init__.py (or wherever you build the admin APIRouter):
+   from app.api.admin import users as admin_users
+   api_router.include_router(admin_users.router, prefix="/users")
+
+   The parent router must already be mounted at /admin so full paths are:
+   GET    /admin/users
+   GET    /admin/users/{whatsapp_number}
+   PATCH  /admin/users/{whatsapp_number}/plan
+   PATCH  /admin/users/{whatsapp_number}/status
+   PATCH  /admin/users/{whatsapp_number}/dates
+   POST   /admin/users/{whatsapp_number}/block
+   POST   /admin/users/{whatsapp_number}/unblock
+   POST   /admin/users/{whatsapp_number}/send
+
+3) Fix imports at the top of users.py if your modules differ:
+   - get_db session
+   - Subscription, ChatLog, AuditEvent model names / paths
+   - get_current_admin, require_admin pattern (must expose .id, .email, .role)
+
+4) If Subscription has no updated_at field, remove or comment every line that sets sub.updated_at.
+
+5) Wire _send_whatsapp_message() to the same code used by POST /whatsapp/send (Meta API).
+   Until wired, "Send WhatsApp" from the dashboard returns 501.
+
+6) Ensure Neon has audit_events (and admin_users) from roadmap B0.1.
+
+7) Commit, push, wait for Render deploy. Open /docs and confirm /admin/users appears.
+
+8) Dashboard env VITE_API_URL must be https://<your-service>.onrender.com/admin (no trailing slash).

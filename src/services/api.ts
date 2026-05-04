@@ -30,8 +30,11 @@ export async function apiRequest<T>(path: string, options: RequestOptions = {}):
   if (!response.ok) {
     let message = `Request failed (${response.status})`;
     try {
-      const data = (await response.json()) as { detail?: string };
-      if (data.detail) message = data.detail;
+      const data = (await response.json()) as { detail?: string | Array<{ msg?: string }> };
+      if (typeof data.detail === "string") message = data.detail;
+      else if (Array.isArray(data.detail) && data.detail[0]?.msg) {
+        message = data.detail.map((d) => d.msg).filter(Boolean).join("; ");
+      }
     } catch {
       // ignore parse failures
     }

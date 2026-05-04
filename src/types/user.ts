@@ -28,3 +28,36 @@ export interface UserListFilters {
   page?: number;
   per_page?: number;
 }
+
+export interface ChatLogEntry {
+  id: number;
+  whatsapp_number: string;
+  user_message: string;
+  bot_response: string;
+  response_type: string | null;
+  created_at: string | null;
+}
+
+export interface UserDetailResponse {
+  user: User;
+  recent_chat_logs: ChatLogEntry[];
+}
+
+export interface UpdatePlanBody {
+  plan_name: string;
+  credits?: number;
+  is_recurring?: boolean;
+}
+
+export interface UpdateStatusBody {
+  status: UserStatus;
+}
+
+export interface UpdateDatesBody {
+  subscription_start: string;
+  subscription_end: string;
+}
+
+export interface SendMessageBody {
+  message: string;
+}
