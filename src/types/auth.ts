@@ -18,3 +18,8 @@ export interface AdminUser {
   display_name: string;
   role: Role;
 }
+
+export interface ChangePasswordRequest {
+  current_password: string;
+  new_password: string;
+}

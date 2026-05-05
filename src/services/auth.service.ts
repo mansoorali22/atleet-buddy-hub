@@ -1,5 +1,5 @@
 import { apiRequest } from "@/services/api";
-import type { AdminUser, LoginRequest, LoginResponse } from "@/types/auth";
+import type { AdminUser, ChangePasswordRequest, LoginRequest, LoginResponse } from "@/types/auth";
 
 export const authService = {
   login(payload: LoginRequest) {
@@ -7,5 +7,8 @@ export const authService = {
   },
   me() {
     return apiRequest<AdminUser>("/auth/me");
+  },
+  changePassword(payload: ChangePasswordRequest) {
+    return apiRequest<{ message: string }>("/auth/change-password", { method: "POST", body: payload });
   },
 };

@@ -7,6 +7,7 @@ import {
   ShieldAlert,
   ScrollText,
   Bell,
+  KeyRound,
   Menu,
   X,
   LogOut,
@@ -28,6 +29,7 @@ const navItems: {
   { title: "Refusals", path: "/refusals", icon: ShieldAlert, roles: ["admin", "support"] },
   { title: "Audit Log", path: "/audit-log", icon: ScrollText, roles: ["admin", "support"] },
   { title: "Alerts", path: "/alerts", icon: Bell, roles: ["admin", "support"] },
+  { title: "Change Password", path: "/change-password", icon: KeyRound, roles: ["admin", "support"] },
 ];
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {

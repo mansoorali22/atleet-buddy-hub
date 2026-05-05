@@ -13,6 +13,7 @@ import UsageCost from "./pages/UsageCost";
 import Refusals from "./pages/Refusals";
 import AuditLog from "./pages/AuditLog";
 import AlertsPage from "./pages/AlertsPage";
+import ChangePassword from "./pages/ChangePassword";
 import Unauthorized from "./pages/Unauthorized";
 import NotFound from "./pages/NotFound";
 
@@ -74,6 +75,14 @@ const App = () => (
               element={
                 <ProtectedRoute>
                   <AlertsPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/change-password"
+              element={
+                <ProtectedRoute>
+                  <ChangePassword />
                 </ProtectedRoute>
               }
             />
