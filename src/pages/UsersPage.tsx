@@ -55,7 +55,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { useAuth } from "@/hooks/useAuth";
-import { canEditSubscriptions, canSendManualWhatsApp } from "@/lib/permissions";
+import { canEditPlans, canEditSubscriptions, canSendManualWhatsApp } from "@/lib/permissions";
 import { useUsers } from "@/hooks/useUsers";
 import { useUserDetail } from "@/hooks/useUserDetail";
 import {
@@ -115,6 +115,7 @@ function fromDatetimeLocalValue(local: string): string {
 export default function UsersPage() {
   const { user: authUser } = useAuth();
   const canMutateSubscription = canEditSubscriptions(authUser?.role);
+  const canMutatePlan = canEditPlans(authUser?.role);
   const canSendWhatsApp = canSendManualWhatsApp(authUser?.role);
 
   const [searchInput, setSearchInput] = useState("");
@@ -322,9 +323,11 @@ export default function UsersPage() {
             <SelectContent>
               <SelectItem value="all">All plans</SelectItem>
               <SelectItem value="Trial">Trial</SelectItem>
-              <SelectItem value="Subscription">Subscription</SelectItem>
-              <SelectItem value="Pro">Pro</SelectItem>
-              <SelectItem value="credits">Credits / prepaid</SelectItem>
+              <SelectItem value="Subscription Start">Subscription Start (75)</SelectItem>
+              <SelectItem value="Subscription Active">Subscription Active (150)</SelectItem>
+              <SelectItem value="Subscription Pro">Subscription Pro (300)</SelectItem>
+              <SelectItem value="50 credits">50 credits</SelectItem>
+              <SelectItem value="100 credits">100 credits</SelectItem>
             </SelectContent>
           </Select>
         </div>
@@ -477,10 +480,14 @@ export default function UsersPage() {
                                 Send WhatsApp message
                               </DropdownMenuItem>
                             )}
-                            {canMutateSubscription && (
+                            {canMutatePlan && (
                               <>
                                 <DropdownMenuSeparator />
                                 <DropdownMenuItem onClick={() => openPlanDialog(u)}>Edit plan</DropdownMenuItem>
+                              </>
+                            )}
+                            {canMutateSubscription && (
+                              <>
                                 <DropdownMenuItem onClick={() => openStatusDialog(u)}>Edit status</DropdownMenuItem>
                                 <DropdownMenuItem onClick={() => openDatesDialog(u)}>Edit subscription dates</DropdownMenuItem>
                                 <DropdownMenuItem

@@ -4,7 +4,12 @@ export function isAdmin(role: Role | undefined): boolean {
   return role === "admin";
 }
 
-/** Plan / status / dates / block / unblock */
+/** Plan changes (admin + support) */
+export function canEditPlans(role: Role | undefined): boolean {
+  return role === "admin" || role === "support";
+}
+
+/** Status / dates / block / unblock — admin only */
 export function canEditSubscriptions(role: Role | undefined): boolean {
   return role === "admin";
 }
