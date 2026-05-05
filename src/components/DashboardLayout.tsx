@@ -8,6 +8,7 @@ import {
   ScrollText,
   Bell,
   KeyRound,
+  UserPlus,
   Menu,
   X,
   LogOut,
@@ -23,12 +24,13 @@ const navItems: {
   roles: Role[];
 }[] = [
   { title: "Dashboard", path: "/dashboard", icon: LayoutDashboard, roles: ["admin", "support"] },
-  { title: "Users", path: "/users", icon: Users, roles: ["admin", "support"] },
-  { title: "Usage & Cost", path: "/usage", icon: BarChart3, roles: ["admin", "support"] },
-  { title: "Refusals", path: "/refusals", icon: ShieldAlert, roles: ["admin", "support"] },
-  { title: "Audit Log", path: "/audit-log", icon: ScrollText, roles: ["admin", "support"] },
-  { title: "Alerts", path: "/alerts", icon: Bell, roles: ["admin", "support"] },
-  { title: "Change Password", path: "/change-password", icon: KeyRound, roles: ["admin", "support"] },
+  { title: "Users", path: "/users", icon: Users, roles: ["admin"] },
+  { title: "Usage & Cost", path: "/usage", icon: BarChart3, roles: ["admin"] },
+  { title: "Refusals", path: "/refusals", icon: ShieldAlert, roles: ["admin"] },
+  { title: "Audit Log", path: "/audit-log", icon: ScrollText, roles: ["admin"] },
+  { title: "Alerts", path: "/alerts", icon: Bell, roles: ["admin"] },
+  { title: "Support Accounts", path: "/support-accounts", icon: UserPlus, roles: ["admin"] },
+  { title: "Change Password", path: "/change-password", icon: KeyRound, roles: ["admin"] },
 ];
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {

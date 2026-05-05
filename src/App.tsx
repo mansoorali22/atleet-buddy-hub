@@ -14,6 +14,7 @@ import Refusals from "./pages/Refusals";
 import AuditLog from "./pages/AuditLog";
 import AlertsPage from "./pages/AlertsPage";
 import ChangePassword from "./pages/ChangePassword";
+import SupportAccounts from "./pages/SupportAccounts";
 import Unauthorized from "./pages/Unauthorized";
 import NotFound from "./pages/NotFound";
 
@@ -33,7 +34,7 @@ const App = () => (
             <Route
               path="/dashboard"
               element={
-                <ProtectedRoute>
+                <ProtectedRoute roles={["admin", "support"]}>
                   <Dashboard />
                 </ProtectedRoute>
               }
@@ -41,7 +42,7 @@ const App = () => (
             <Route
               path="/users"
               element={
-                <ProtectedRoute>
+                <ProtectedRoute adminOnly>
                   <UsersPage />
                 </ProtectedRoute>
               }
@@ -49,7 +50,7 @@ const App = () => (
             <Route
               path="/usage"
               element={
-                <ProtectedRoute>
+                <ProtectedRoute adminOnly>
                   <UsageCost />
                 </ProtectedRoute>
               }
@@ -57,7 +58,7 @@ const App = () => (
             <Route
               path="/refusals"
               element={
-                <ProtectedRoute>
+                <ProtectedRoute adminOnly>
                   <Refusals />
                 </ProtectedRoute>
               }
@@ -65,7 +66,7 @@ const App = () => (
             <Route
               path="/audit-log"
               element={
-                <ProtectedRoute>
+                <ProtectedRoute adminOnly>
                   <AuditLog />
                 </ProtectedRoute>
               }
@@ -73,7 +74,7 @@ const App = () => (
             <Route
               path="/alerts"
               element={
-                <ProtectedRoute>
+                <ProtectedRoute adminOnly>
                   <AlertsPage />
                 </ProtectedRoute>
               }
@@ -81,8 +82,16 @@ const App = () => (
             <Route
               path="/change-password"
               element={
-                <ProtectedRoute>
+                <ProtectedRoute adminOnly>
                   <ChangePassword />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/support-accounts"
+              element={
+                <ProtectedRoute adminOnly>
+                  <SupportAccounts />
                 </ProtectedRoute>
               }
             />

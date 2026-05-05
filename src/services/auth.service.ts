@@ -1,5 +1,12 @@
 import { apiRequest } from "@/services/api";
-import type { AdminUser, ChangePasswordRequest, LoginRequest, LoginResponse } from "@/types/auth";
+import type {
+  AdminUser,
+  ChangePasswordRequest,
+  CreateSupportAccountRequest,
+  LoginRequest,
+  LoginResponse,
+  SupportAccount,
+} from "@/types/auth";
 
 export const authService = {
   login(payload: LoginRequest) {
@@ -10,5 +17,11 @@ export const authService = {
   },
   changePassword(payload: ChangePasswordRequest) {
     return apiRequest<{ message: string }>("/auth/change-password", { method: "POST", body: payload });
+  },
+  listSupportAccounts() {
+    return apiRequest<SupportAccount[]>("/auth/support-accounts");
+  },
+  createSupportAccount(payload: CreateSupportAccountRequest) {
+    return apiRequest<SupportAccount>("/auth/support-accounts", { method: "POST", body: payload });
   },
 };

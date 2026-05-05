@@ -23,3 +23,17 @@ export interface ChangePasswordRequest {
   current_password: string;
   new_password: string;
 }
+
+export interface CreateSupportAccountRequest {
+  email: string;
+  display_name: string;
+  password: string;
+}
+
+export interface SupportAccount {
+  id: number;
+  email: string;
+  display_name: string;
+  role: "support";
+  created_at?: string | null;
+}

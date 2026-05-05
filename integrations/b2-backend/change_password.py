@@ -44,3 +44,9 @@ def change_password(
     db_admin.password_hash = hash_password(body.new_password)
     db.commit()
     return {"message": "Password updated successfully"}
+
+
+# Register reminder:
+# from app.api.admin import auth as admin_auth
+# api_router.include_router(admin_auth.router)
+# If this route lives in a separate module, include that router too.
