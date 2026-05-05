@@ -12,7 +12,6 @@ import {
   X,
   LogOut,
 } from "lucide-react";
-import { Badge } from "@/components/ui/badge";
 import { useAuth } from "@/hooks/useAuth";
 import type { Role } from "@/types/auth";
 
@@ -118,7 +117,6 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
             </div>
             <div className="hidden sm:flex items-center gap-2">
               <span className="font-medium">{user?.display_name ?? "Unknown"}</span>
-              {user && <Badge variant="secondary">{user.role}</Badge>}
             </div>
           </div>
         </header>
