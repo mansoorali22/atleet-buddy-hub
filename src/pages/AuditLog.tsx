@@ -17,10 +17,35 @@ function formatTs(iso: string): string {
   }
 }
 
-function detailsText(details: Record<string, unknown> | null): string {
+function detailsText(action: string, details: Record<string, unknown> | null): string {
   if (!details) return "—";
   try {
-    return JSON.stringify(details);
+    const d = details;
+    switch (action) {
+      case "PLAN_CHANGE":
+        return `Plan changed from "${d.old_plan ?? "none"}" to "${d.new_plan ?? "unknown"}"`;
+      case "STATUS_CHANGE":
+        return `Status changed from "${d.old_status ?? "none"}" to "${d.new_status ?? "unknown"}"`;
+      case "BLOCK":
+        return d.reason ? `Blocked — ${d.reason}` : "User blocked";
+      case "UNBLOCK":
+        return "User unblocked";
+      case "SEND_MESSAGE":
+        return d.message ? `Sent: "${String(d.message).slice(0, 80)}${String(d.message).length > 80 ? "…" : ""}"` : "Message sent";
+      case "DATES_CHANGE":
+        return `Dates updated${d.new_start ? ` — start: ${d.new_start}` : ""}${d.new_end ? `, end: ${d.new_end}` : ""}`;
+      case "LOGIN":
+        return d.ip ? `Logged in from ${d.ip}` : "Logged in";
+      case "PASSWORD_CHANGE":
+        return "Password was changed";
+      case "CREATE_SUPPORT_ACCOUNT":
+        return d.email ? `Created support account for ${d.email}` : "Support account created";
+      default: {
+        // Fallback: turn keys into readable text
+        const parts = Object.entries(d).map(([k, v]) => `${k.replace(/_/g, " ")}: ${v}`);
+        return parts.join(", ") || "—";
+      }
+    }
   } catch {
     return "—";
   }
@@ -128,8 +153,8 @@ export default function AuditLogPage() {
                     <td className="px-4 py-3 text-muted-foreground max-w-[140px] truncate">
                       {l.target_id ?? "—"}
                     </td>
-                    <td className="px-4 py-3 text-foreground max-w-md truncate" title={detailsText(l.details)}>
-                      {detailsText(l.details)}
+                    <td className="px-4 py-3 text-foreground max-w-md truncate" title={detailsText(l.action, l.details)}>
+                      {detailsText(l.action, l.details)}
                     </td>
                   </tr>
                 ))}
@@ -145,29 +170,31 @@ export default function AuditLogPage() {
         </div>
 
         {/* Pagination */}
-        {totalPages > 1 && (
+        {!isLoading && events.length > 0 && (
           <div className="flex items-center justify-between">
             <p className="text-sm text-muted-foreground">
               Page {page} of {totalPages} ({data?.total ?? 0} events)
             </p>
-            <div className="flex gap-2">
-              <Button
-                variant="outline"
-                size="sm"
-                disabled={page <= 1}
-                onClick={() => setPage((p) => Math.max(1, p - 1))}
-              >
-                Previous
-              </Button>
-              <Button
-                variant="outline"
-                size="sm"
-                disabled={page >= totalPages}
-                onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
-              >
-                Next
-              </Button>
-            </div>
+            {totalPages > 1 && (
+              <div className="flex gap-2">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  disabled={page <= 1}
+                  onClick={() => setPage((p) => Math.max(1, p - 1))}
+                >
+                  Previous
+                </Button>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  disabled={page >= totalPages}
+                  onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
+                >
+                  Next
+                </Button>
+              </div>
+            )}
           </div>
         )}
       </div>

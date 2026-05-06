@@ -1,20 +1,37 @@
 import { useMemo, useState } from "react";
-import { format, subDays } from "date-fns";
+import { format, parseISO, subDays } from "date-fns";
 import { Bar, BarChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
-import { ChevronDown, ChevronRight } from "lucide-react";
+import { MessageSquareOff } from "lucide-react";
 import DashboardLayout from "@/components/DashboardLayout";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
-import { useRefusalGroups, useRefusalTrend } from "@/hooks/useRefusals";
+import { useRefusalTrend, useRefusalList } from "@/hooks/useRefusals";
+import type { RefusalItem } from "@/types/refusal";
+
+function formatTs(iso: string | null): string {
+  if (!iso) return "";
+  try {
+    return format(parseISO(iso), "MMM d, yyyy HH:mm");
+  } catch {
+    return iso;
+  }
+}
 
 export default function RefusalsPage() {
-  const [expanded, setExpanded] = useState<string | null>(null);
-
   const to = useMemo(() => format(new Date(), "yyyy-MM-dd"), []);
   const from = useMemo(() => format(subDays(new Date(), 29), "yyyy-MM-dd"), []);
 
-  const groups = useRefusalGroups(from, to);
+  const [page, setPage] = useState(1);
+  const perPage = 20;
+
   const trend = useRefusalTrend(from, to);
+  const list = useRefusalList(from, to, page, perPage);
+
+  const items = list.data?.items ?? [];
+  const totalPages = list.data?.pages ?? 1;
+  const totalRefusals = list.data?.total ?? 0;
 
   const barData = useMemo(
     () =>
@@ -23,11 +40,6 @@ export default function RefusalsPage() {
         label: row.date.length >= 10 ? row.date.slice(5, 10) : row.date,
       })),
     [trend.data],
-  );
-
-  const totalRefusals = useMemo(
-    () => (groups.data ?? []).reduce((sum, g) => sum + g.count, 0),
-    [groups.data],
   );
 
   return (
@@ -40,9 +52,9 @@ export default function RefusalsPage() {
           </p>
         </div>
 
-        {(groups.error || trend.error) && (
+        {(list.error || trend.error) && (
           <p className="text-sm text-destructive">
-            {((groups.error || trend.error) as Error)?.message ?? "Failed to load refusal data."}
+            {((list.error || trend.error) as Error)?.message ?? "Failed to load refusal data."}
           </p>
         )}
 
@@ -76,59 +88,82 @@ export default function RefusalsPage() {
           </CardContent>
         </Card>
 
-        {/* Grouped by category */}
+        {/* Refused messages list */}
         <div>
           <h2 className="text-sm font-semibold uppercase tracking-wide text-muted-foreground mb-3">
-            By category
+            Refused messages
           </h2>
-          {groups.isLoading && (
+
+          {list.isLoading && (
             <div className="space-y-3">
               {Array.from({ length: 4 }).map((_, i) => (
-                <Skeleton key={i} className="h-14 w-full rounded-xl" />
+                <Skeleton key={i} className="h-24 w-full rounded-xl" />
               ))}
             </div>
           )}
+
           <div className="space-y-3">
-            {(groups.data ?? []).map((g) => (
-              <Card key={g.category} className="shadow-sm">
-                <CardContent className="p-0">
-                  <button
-                    onClick={() => setExpanded(expanded === g.category ? null : g.category)}
-                    className="flex w-full items-center justify-between px-5 py-4 text-left hover:bg-secondary/50 transition-colors rounded-xl"
-                  >
-                    <div className="flex items-center gap-3">
-                      {expanded === g.category ? (
-                        <ChevronDown className="h-4 w-4 text-muted-foreground" />
-                      ) : (
-                        <ChevronRight className="h-4 w-4 text-muted-foreground" />
+            {items.map((r: RefusalItem) => (
+              <Card key={r.id} className="shadow-sm">
+                <CardContent className="flex items-start gap-4 p-5">
+                  <div className="mt-0.5 rounded-lg p-2.5 bg-destructive/10">
+                    <MessageSquareOff className="h-5 w-5 text-destructive" />
+                  </div>
+                  <div className="flex-1 min-w-0 space-y-2">
+                    <div className="flex items-center gap-2 flex-wrap">
+                      <span className="text-sm font-medium text-foreground">{r.whatsapp_number}</span>
+                      {r.refusal_category && (
+                        <Badge variant="outline" className="text-xs capitalize">
+                          {r.refusal_category.replace(/_/g, " ")}
+                        </Badge>
                       )}
-                      <span className="font-medium text-foreground capitalize">
-                        {g.category.replace(/_/g, " ")}
-                      </span>
+                      <span className="text-xs text-muted-foreground">{formatTs(r.created_at)}</span>
                     </div>
-                    <div className="flex items-center gap-3">
-                      <span className="text-xs text-muted-foreground">{g.percentage}%</span>
-                      <span className="rounded-full bg-destructive/10 px-3 py-0.5 text-xs font-medium text-destructive">
-                        {g.count} refusals
-                      </span>
+                    <div className="rounded-lg bg-secondary/50 px-3 py-2">
+                      <p className="text-xs font-medium text-muted-foreground mb-1">User asked:</p>
+                      <p className="text-sm text-foreground">{r.user_message}</p>
                     </div>
-                  </button>
-                  {expanded === g.category && (
-                    <div className="border-t border-border px-5 py-3">
-                      <p className="text-xs text-muted-foreground">
-                        {g.count} refusals ({g.percentage}% of total)
-                      </p>
+                    <div className="rounded-lg bg-destructive/5 px-3 py-2">
+                      <p className="text-xs font-medium text-muted-foreground mb-1">Bot refused:</p>
+                      <p className="text-sm text-foreground">{r.bot_response}</p>
                     </div>
-                  )}
+                  </div>
                 </CardContent>
               </Card>
             ))}
-            {!groups.isLoading && (groups.data ?? []).length === 0 && (
+            {!list.isLoading && items.length === 0 && (
               <p className="text-sm text-muted-foreground py-8 text-center">
                 No refusals in this period.
               </p>
             )}
           </div>
+
+          {/* Pagination */}
+          {totalPages > 1 && (
+            <div className="flex items-center justify-between mt-4">
+              <p className="text-sm text-muted-foreground">
+                Page {page} of {totalPages} ({totalRefusals} refusals)
+              </p>
+              <div className="flex gap-2">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  disabled={page <= 1}
+                  onClick={() => setPage((p) => Math.max(1, p - 1))}
+                >
+                  Previous
+                </Button>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  disabled={page >= totalPages}
+                  onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
+                >
+                  Next
+                </Button>
+              </div>
+            </div>
+          )}
         </div>
       </div>
     </DashboardLayout>
