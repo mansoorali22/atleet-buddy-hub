@@ -1,12 +1,12 @@
 export interface RefusalGroup {
   category: string;
   count: number;
-  latest: string;
+  percentage: number;
 }
 
 export interface RefusalTrendPoint {
   date: string;
   refusals: number;
-  total: number;
+  total_messages: number;
   refusal_rate: number;
 }

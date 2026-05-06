@@ -579,10 +579,10 @@ export default function UsersPage() {
                 <div>
                   <h4 className="font-semibold mb-2">Recent chat</h4>
                   <div className="space-y-3 max-h-[50vh] overflow-y-auto pr-1">
-                    {detailData.recent_chat_logs.length === 0 && (
+                    {detailData.recent_chats.length === 0 && (
                       <p className="text-muted-foreground">No messages yet.</p>
                     )}
-                    {detailData.recent_chat_logs.map((log) => (
+                    {detailData.recent_chats.map((log) => (
                       <div key={log.id} className="rounded-lg border border-border p-3 space-y-1">
                         <div className="text-xs text-muted-foreground">
                           {formatDt(log.created_at)} · {log.response_type ?? "—"}

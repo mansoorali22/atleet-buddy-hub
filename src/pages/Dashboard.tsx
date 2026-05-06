@@ -1,4 +1,5 @@
 import { useMemo } from "react";
+import { useNavigate } from "react-router-dom";
 import { format, subDays } from "date-fns";
 import { Bar, BarChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 import { Users, CreditCard, MessageSquare, DollarSign, TrendingUp, TrendingDown } from "lucide-react";
@@ -19,6 +20,7 @@ function formatUsd(n: number) {
 }
 
 export default function DashboardPage() {
+  const navigate = useNavigate();
   const today = useMemo(() => format(new Date(), "yyyy-MM-dd"), []);
   const weekFrom = useMemo(() => format(subDays(new Date(), 6), "yyyy-MM-dd"), []);
 
@@ -61,6 +63,7 @@ export default function DashboardPage() {
       up: true,
       icon: Users,
       hideTrend: true,
+      link: "/users",
     },
     {
       title: "Active Subscriptions",
@@ -69,6 +72,7 @@ export default function DashboardPage() {
       up: true,
       icon: CreditCard,
       hideTrend: true,
+      link: "/users",
     },
     {
       title: "Messages Today",
@@ -77,6 +81,7 @@ export default function DashboardPage() {
       up: msgChange.up,
       icon: MessageSquare,
       hideTrend: false,
+      link: "/usage",
     },
     {
       title: "Est. Cost Today",
@@ -85,6 +90,7 @@ export default function DashboardPage() {
       up: costChange.up,
       icon: DollarSign,
       hideTrend: false,
+      link: "/usage",
     },
   ];
 
@@ -107,7 +113,11 @@ export default function DashboardPage() {
         {/* Stat cards */}
         <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
           {stats.map((s) => (
-            <Card key={s.title} className="border-border/60 shadow-sm transition-shadow hover:shadow-md">
+            <Card
+              key={s.title}
+              className="border-border/60 shadow-sm transition-shadow hover:shadow-md cursor-pointer"
+              onClick={() => navigate(s.link)}
+            >
               <CardContent className="flex items-start justify-between p-6">
                 <div className="space-y-2">
                   <p className="text-sm font-medium text-muted-foreground">{s.title}</p>
