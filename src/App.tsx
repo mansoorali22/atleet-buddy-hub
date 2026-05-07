@@ -42,7 +42,7 @@ const App = () => (
             <Route
               path="/users"
               element={
-                <ProtectedRoute adminOnly>
+                <ProtectedRoute roles={["admin", "support"]}>
                   <UsersPage />
                 </ProtectedRoute>
               }
@@ -50,7 +50,7 @@ const App = () => (
             <Route
               path="/usage"
               element={
-                <ProtectedRoute adminOnly>
+                <ProtectedRoute roles={["admin", "support"]}>
                   <UsageCost />
                 </ProtectedRoute>
               }
@@ -58,7 +58,7 @@ const App = () => (
             <Route
               path="/refusals"
               element={
-                <ProtectedRoute adminOnly>
+                <ProtectedRoute roles={["admin", "support"]}>
                   <Refusals />
                 </ProtectedRoute>
               }
@@ -74,7 +74,7 @@ const App = () => (
             <Route
               path="/alerts"
               element={
-                <ProtectedRoute adminOnly>
+                <ProtectedRoute roles={["admin", "support"]}>
                   <AlertsPage />
                 </ProtectedRoute>
               }
@@ -82,7 +82,7 @@ const App = () => (
             <Route
               path="/change-password"
               element={
-                <ProtectedRoute adminOnly>
+                <ProtectedRoute roles={["admin", "support"]}>
                   <ChangePassword />
                 </ProtectedRoute>
               }

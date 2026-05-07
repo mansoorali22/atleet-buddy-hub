@@ -357,9 +357,6 @@ export default function UsersPage() {
                 <th className="px-4 py-3 font-semibold text-muted-foreground text-xs uppercase tracking-wide">
                   Plan
                 </th>
-                <th className="px-4 py-3 font-semibold text-muted-foreground text-xs uppercase tracking-wide hidden lg:table-cell">
-                  Type
-                </th>
                 <th className="px-4 py-3 font-semibold text-muted-foreground text-xs uppercase tracking-wide">
                   Credits
                 </th>
@@ -390,9 +387,6 @@ export default function UsersPage() {
                     </td>
                     <td className="px-4 py-3">
                       <Skeleton className="h-4 w-24" />
-                    </td>
-                    <td className="px-4 py-3 hidden lg:table-cell">
-                      <Skeleton className="h-4 w-20" />
                     </td>
                     <td className="px-4 py-3">
                       <Skeleton className="h-4 w-10" />
@@ -433,9 +427,6 @@ export default function UsersPage() {
                     </td>
                     <td className="px-4 py-3 text-foreground font-medium max-w-[180px] truncate">
                       {u.plan_name ?? "—"}
-                    </td>
-                    <td className="px-4 py-3 text-muted-foreground hidden lg:table-cell">
-                      {u.is_recurring ? "Subscription" : "Prepaid"}
                     </td>
                     <td className="px-4 py-3 font-semibold">{u.credits}</td>
                     <td className="px-4 py-3 font-semibold">{u.message_count.toLocaleString()}</td>
@@ -509,7 +500,7 @@ export default function UsersPage() {
                 ))}
               {!isLoading && users.length === 0 && (
                 <tr>
-                  <td colSpan={10} className="px-4 py-12 text-center text-muted-foreground text-sm">
+                  <td colSpan={9} className="px-4 py-12 text-center text-muted-foreground text-sm">
                     No users match your filters.
                   </td>
                 </tr>

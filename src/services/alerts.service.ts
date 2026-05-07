@@ -22,4 +22,10 @@ export const alertsService = {
       body: { status: "resolved" },
     });
   },
+  reopen(id: number) {
+    return apiRequest<Alert>(`/alerts/${id}`, {
+      method: "PATCH",
+      body: { status: "active" },
+    });
+  },
 };

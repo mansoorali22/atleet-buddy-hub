@@ -38,3 +38,14 @@ export function useResolveAlert() {
     },
   });
 }
+
+export function useReopenAlert() {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (id: number) => alertsService.reopen(id),
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({ queryKey: ["alerts"] });
+      await queryClient.invalidateQueries({ queryKey: ["alert-stats"] });
+    },
+  });
+}
