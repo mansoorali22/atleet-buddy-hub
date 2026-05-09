@@ -6,7 +6,6 @@ import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
 import { Skeleton } from "@/components/ui/skeleton";
 import {
   Dialog,
@@ -55,12 +54,11 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { useAuth } from "@/hooks/useAuth";
-import { canEditPlans, canEditSubscriptions, canSendManualWhatsApp } from "@/lib/permissions";
+import { canEditPlans, canEditSubscriptions } from "@/lib/permissions";
 import { useUsers } from "@/hooks/useUsers";
 import { useUserDetail } from "@/hooks/useUserDetail";
 import {
   useBlockUser,
-  useSendUserMessage,
   useUnblockUser,
   useUpdateUserDates,
   useUpdateUserPlan,
@@ -116,7 +114,7 @@ export default function UsersPage() {
   const { user: authUser } = useAuth();
   const canMutateSubscription = canEditSubscriptions(authUser?.role);
   const canMutatePlan = canEditPlans(authUser?.role);
-  const canSendWhatsApp = canSendManualWhatsApp(authUser?.role);
+
 
   const [searchInput, setSearchInput] = useState("");
   const [debouncedSearch, setDebouncedSearch] = useState("");
@@ -139,8 +137,6 @@ export default function UsersPage() {
   const [startLocal, setStartLocal] = useState("");
   const [endLocal, setEndLocal] = useState("");
 
-  const [sendDialogUser, setSendDialogUser] = useState<User | null>(null);
-  const [sendMessage, setSendMessage] = useState("");
 
   const [blockDialogUser, setBlockDialogUser] = useState<User | null>(null);
   const [blockAction, setBlockAction] = useState<"block" | "unblock">("block");
@@ -165,8 +161,6 @@ export default function UsersPage() {
   const updateDates = useUpdateUserDates();
   const blockUser = useBlockUser();
   const unblockUser = useUnblockUser();
-  const sendUserMessage = useSendUserMessage();
-
   const openPlanDialog = useCallback((u: User) => {
     setPlanDialogUser(u);
     setPlanName(u.plan_name ?? "");
@@ -231,21 +225,6 @@ export default function UsersPage() {
       setDatesDialogUser(null);
     } catch (e) {
       toast.error(e instanceof Error ? e.message : "Update failed");
-    }
-  };
-
-  const onSubmitSend = async () => {
-    if (!sendDialogUser || !sendMessage.trim()) return;
-    try {
-      await sendUserMessage.mutateAsync({
-        whatsappNumber: sendDialogUser.whatsapp_number,
-        body: { message: sendMessage.trim() },
-      });
-      toast.success("Message sent");
-      setSendDialogUser(null);
-      setSendMessage("");
-    } catch (e) {
-      toast.error(e instanceof Error ? e.message : "Send failed");
     }
   };
 
@@ -466,11 +445,6 @@ export default function UsersPage() {
                             <DropdownMenuItem onClick={() => setSheetUser(u.whatsapp_number)}>
                               View detail &amp; chat
                             </DropdownMenuItem>
-                            {canSendWhatsApp && (
-                              <DropdownMenuItem onClick={() => setSendDialogUser(u)}>
-                                Send WhatsApp message
-                              </DropdownMenuItem>
-                            )}
                             {canMutatePlan && (
                               <>
                                 <DropdownMenuSeparator />
@@ -683,29 +657,6 @@ export default function UsersPage() {
               </Button>
               <Button onClick={() => void onSubmitDates()} disabled={updateDates.isPending}>
                 Save
-              </Button>
-            </DialogFooter>
-          </DialogContent>
-        </Dialog>
-
-        {/* Send message */}
-        <Dialog open={Boolean(sendDialogUser)} onOpenChange={(o) => !o && setSendDialogUser(null)}>
-          <DialogContent>
-            <DialogHeader>
-              <DialogTitle>Send WhatsApp message</DialogTitle>
-            </DialogHeader>
-            <Textarea
-              value={sendMessage}
-              onChange={(e) => setSendMessage(e.target.value)}
-              placeholder="Message to send..."
-              rows={4}
-            />
-            <DialogFooter>
-              <Button variant="outline" onClick={() => setSendDialogUser(null)}>
-                Cancel
-              </Button>
-              <Button onClick={() => void onSubmitSend()} disabled={sendUserMessage.isPending}>
-                Send
               </Button>
             </DialogFooter>
           </DialogContent>
