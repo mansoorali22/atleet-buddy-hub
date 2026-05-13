@@ -45,7 +45,7 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from "@/components/ui/pagination";
-import { Search, MoreHorizontal, Eye } from "lucide-react";
+import { Search, MoreHorizontal, Eye, User as UserIcon, Dumbbell, Target, Utensils, Ruler, Weight, Calendar } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -541,6 +541,64 @@ export default function UsersPage() {
                   <div className="text-muted-foreground">Messages</div>
                   <div className="font-medium">{detailData.user.message_count}</div>
                 </div>
+                {/* Profile section (D/E1) */}
+                {detailData.profile && (
+                  <div>
+                    <h4 className="font-semibold mb-2 flex items-center gap-1.5">
+                      <UserIcon className="h-4 w-4" /> Profile
+                    </h4>
+                    <div className="rounded-lg border border-border p-3 grid grid-cols-2 gap-x-4 gap-y-2 text-xs">
+                      {detailData.profile.age != null && (
+                        <>
+                          <span className="text-muted-foreground flex items-center gap-1"><Calendar className="h-3 w-3" /> Age</span>
+                          <span className="font-medium">{detailData.profile.age} years</span>
+                        </>
+                      )}
+                      {detailData.profile.weight_kg != null && (
+                        <>
+                          <span className="text-muted-foreground flex items-center gap-1"><Weight className="h-3 w-3" /> Weight</span>
+                          <span className="font-medium">{detailData.profile.weight_kg} kg</span>
+                        </>
+                      )}
+                      {detailData.profile.height_cm != null && (
+                        <>
+                          <span className="text-muted-foreground flex items-center gap-1"><Ruler className="h-3 w-3" /> Height</span>
+                          <span className="font-medium">{detailData.profile.height_cm} cm</span>
+                        </>
+                      )}
+                      {detailData.profile.sport && (
+                        <>
+                          <span className="text-muted-foreground flex items-center gap-1"><Dumbbell className="h-3 w-3" /> Sport</span>
+                          <span className="font-medium capitalize">{detailData.profile.sport}</span>
+                        </>
+                      )}
+                      {detailData.profile.goals && (
+                        <>
+                          <span className="text-muted-foreground flex items-center gap-1"><Target className="h-3 w-3" /> Goals</span>
+                          <span className="font-medium capitalize">{detailData.profile.goals}</span>
+                        </>
+                      )}
+                      {detailData.profile.dietary_preferences && (
+                        <>
+                          <span className="text-muted-foreground flex items-center gap-1"><Utensils className="h-3 w-3" /> Diet</span>
+                          <span className="font-medium capitalize">{detailData.profile.dietary_preferences}</span>
+                        </>
+                      )}
+                      {detailData.profile.training_frequency && (
+                        <>
+                          <span className="text-muted-foreground flex items-center gap-1"><Dumbbell className="h-3 w-3" /> Training</span>
+                          <span className="font-medium">{detailData.profile.training_frequency}</span>
+                        </>
+                      )}
+                      {detailData.profile.updated_at && (
+                        <span className="col-span-2 text-muted-foreground text-[10px] mt-1">
+                          Last updated: {formatDt(detailData.profile.updated_at)}
+                        </span>
+                      )}
+                    </div>
+                  </div>
+                )}
+
                 <div>
                   <h4 className="font-semibold mb-2">Recent chat</h4>
                   <div className="space-y-3 max-h-[50vh] overflow-y-auto pr-1">

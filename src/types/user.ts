@@ -38,8 +38,20 @@ export interface ChatLogEntry {
   created_at: string | null;
 }
 
+export interface UserProfile {
+  weight_kg: number | null;
+  height_cm: number | null;
+  age: number | null;
+  goals: string | null;
+  sport: string | null;
+  dietary_preferences: string | null;
+  training_frequency: string | null;
+  updated_at: string | null;
+}
+
 export interface UserDetailResponse {
   user: User;
+  profile: UserProfile | null;
   recent_chat_logs: ChatLogEntry[];
 }
 
