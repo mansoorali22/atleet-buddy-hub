@@ -15,6 +15,7 @@ import AuditLog from "./pages/AuditLog";
 import AlertsPage from "./pages/AlertsPage";
 import ChangePassword from "./pages/ChangePassword";
 import SupportAccounts from "./pages/SupportAccounts";
+import FAQPage from "./pages/FAQPage";
 import Unauthorized from "./pages/Unauthorized";
 import NotFound from "./pages/NotFound";
 
@@ -84,6 +85,14 @@ const App = () => (
               element={
                 <ProtectedRoute roles={["admin", "support"]}>
                   <ChangePassword />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/faq"
+              element={
+                <ProtectedRoute adminOnly>
+                  <FAQPage />
                 </ProtectedRoute>
               }
             />

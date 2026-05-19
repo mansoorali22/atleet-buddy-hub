@@ -12,6 +12,7 @@ import {
   Menu,
   X,
   LogOut,
+  Database,
 } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import type { Role } from "@/types/auth";
@@ -29,6 +30,7 @@ const navItems: {
   { title: "Refusals", path: "/refusals", icon: ShieldAlert, roles: ["admin", "support"] },
   { title: "Audit Log", path: "/audit-log", icon: ScrollText, roles: ["admin"] },
   { title: "Alerts", path: "/alerts", icon: Bell, roles: ["admin", "support"] },
+  { title: "FAQ Cache", path: "/faq", icon: Database, roles: ["admin"] },
   { title: "Support Accounts", path: "/support-accounts", icon: UserPlus, roles: ["admin"] },
   { title: "Change Password", path: "/change-password", icon: KeyRound, roles: ["admin", "support"] },
 ];
